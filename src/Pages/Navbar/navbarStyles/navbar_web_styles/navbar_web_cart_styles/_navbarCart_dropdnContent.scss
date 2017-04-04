@@ -9,8 +9,10 @@
   box-shadow: 1px 2px 4px rgba(0,0,0,.5);
   z-index: 1;
   & .container {
-    @extend .flex-center;
+    @include prefixflex();
+    justify-content: center;
     flex-direction: column;
+    width: 22em;
     & .promotion {
       @extend .flex-center;
       @include prefixed(font-smoothing, subpixel-antialiased);
@@ -37,8 +39,8 @@
     }
 /* PRODUCTS CARD */
     & .products {
-      @extend .flex-center;
       @extend .ddn-cart-p-font;
+      @include prefixflex();
       min-height: 5.83em;
       height: 5.83em;
       max-width: 18.33em;

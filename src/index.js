@@ -1,29 +1,31 @@
-/* eslint-disable import/default */
 import 'babel-polyfill';
-import 'masonry-layout';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
+import createStore from './Redux/index';
+import reactStartup from './Services/Asynch';
+import routes from './Navigation/routes';
 import './styles.scss';
 
-import './Services/history';
-// import { taxRateListener } from './Services/socket-init';
-import createStore from './Redux/index';
-import initiateActions from './Services/Asynch';
-import routes from './Navigation/routes';
+/* NOTE:
+This import will be implemented in React Router v4 implementation.
+Currently react-router-redux is in beta.  Upon approval, this app will migrate.
+
+import browserHistory from './Services/history';
+*/
 
 const store = createStore();
 const history = syncHistoryWithStore(browserHistory, store);
-initiateActions(store.dispatch);
+reactStartup('initialize', store.dispatch);
 
 render(
   <Provider store={store} >
     <Router
       history={history}
       routes={routes}
-      onUpdate={() => initiateActions(store.dispatch)}
+      onUpdate={() => reactStartup(null, store.dispatch)}
     />
   </Provider >
   ,

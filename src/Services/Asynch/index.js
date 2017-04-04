@@ -35,6 +35,7 @@ export function generateDynamicTitle(dispatch) {
   }
   dispatch(sessionActions.saveActivePage(title, url));
 }
+
 export function saveGeoLocation(dispatch) {
   const activeLocation = JSON.parse(localStorage.getItem('active_location'));
   if (activeLocation) {
@@ -45,66 +46,60 @@ export function saveGeoLocation(dispatch) {
 }
 
 export function setMobileDevice(dispatch) {
-  const mobileDevice = new MobileDetect(window.navigator.userAgent);
-  const type = mobileDevice.mobile();
-  dispatch(mobileActions.setMobileDevice(type));
+  const device = new MobileDetect(window.navigator.userAgent);
+  dispatch(mobileActions.setMobileDevice(device.mobile()));
 }
 
 export function setScreenSize(dispatch) {
-  const screenSize = String(window.screen.width);
-  dispatch(mobileActions.setScreenWidth(screenSize));
+  dispatch(mobileActions.setScreenWidth(String(window.screen.width)));
 }
 
-export function orientationSpy(dispatch) {
-  window.addEventListener('orientationchange', () => {
-    if (screen.orientation) {
-      dispatch(mobileActions.orientationChanged({
-        angle: screen.orientation.angle,
-        type: screen.orientation.type,
-        height: screen.height,
-        width: screen.width,
-      }));
-    } else {
-      dispatch(mobileActions.orientationChanged({
-        height: screen.height,
-        width: screen.width,
-        angle: null,
-        type: null,
-      }));
-    }
-  });
+export function dispatchMobileScreenSize(dispatch) {
+  if (window.screen.orientation) {
+    dispatch(mobileActions.orientationChanged({
+      angle: window.screen.orientation.angle,
+      type: window.screen.orientation.type,
+      height: window.screen.height,
+      width: window.screen.width,
+    }));
+  } else {
+    dispatch(mobileActions.orientationChanged({
+      angle: null,
+      type: null,
+      height: window.screen.height,
+      width: window.screen.width,
+    }));
+  }
+}
+
+export function screenSpy(dispatch) {
+  window.addEventListener('orientationchange', () => dispatchMobileScreenSize(dispatch));
+  window.addEventListener('resize', () => setScreenSize(dispatch));
 }
 
 export function getTaxRate(dispatch) {
   dispatch(orderActions.getTaxRate());
 }
 
-function scrollToTop() {
+// export function loadModule(dispatch) {
+// }
+
+export function scrollToTop() {
   window.scrollTo(0, 1);
 }
 
-export default function initiateActions(dispatch) {
-  generateDynamicTitle(dispatch);
-  saveGeoLocation(dispatch);
-  setMobileDevice(dispatch);
-  setScreenSize(dispatch);
-  orientationSpy(dispatch);
-  getTaxRate(dispatch);
-  if (screen.orientation) {
-    dispatch(mobileActions.orientationChanged({
-      angle: screen.orientation.angle,
-      type: screen.orientation.type,
-      height: screen.height,
-      width: screen.width,
-    }));
+export default function reactStartup(initialize, dispatch) {
+  if (initialize) {
+    generateDynamicTitle(dispatch);
+    saveGeoLocation(dispatch);
+    setMobileDevice(dispatch);
+    screenSpy(dispatch);
+    getTaxRate(dispatch);
+    dispatchMobileScreenSize(dispatch);
+    scrollToTop();
   } else {
-    const screenSize = {
-      height: screen.height,
-      width: screen.width,
-      angle: null,
-      type: null,
-    };
-    dispatch(mobileActions.orientationChanged({ screenSize }));
+    generateDynamicTitle(dispatch);
+    scrollToTop();
+    // loadModule(dispatch);
   }
-  scrollToTop();
 }

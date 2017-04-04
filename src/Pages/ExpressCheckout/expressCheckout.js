@@ -1,3 +1,4 @@
+import 'masonry-layout';
 import React from 'react';
 import { Link, browserHistory } from 'react-router';
 import FontAwesome from 'react-fontawesome';

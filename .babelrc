@@ -5,6 +5,9 @@
     "react",
     "stage-2"
   ],
+  "plugins": [
+    "tranform-runtime",
+  ],
   "env": {
     "development": {
       "presets": ["react-hmre"],
@@ -12,6 +15,7 @@
         "transform-react-jsx-source",
         "transform-react-display-name",
         "transform-export-extensions",
+        "tranform-runtime",
         "syntax-dynamic-import",
       ],
     },

@@ -20,8 +20,6 @@ import {
 } from './propTypes.imports';
 import {
   BreadCrumb,
-  // BillingAddress,
-  // CheckoutGrid,
   ShippingAddress,
   ShippingMethod,
   CreditCardInfo,
@@ -49,7 +47,7 @@ class ExpressCheckout extends Component {
     super(props);
 
     this.state = {
-      ccRenderKey: 'renderWithZip',
+      ccRenderKey: '',
       showCvnModal: false,
       error: null,
       errors: {
@@ -96,20 +94,31 @@ class ExpressCheckout extends Component {
   componentDidMount() {
     // console.log('%cthis.paymentForm: ', 'background:blue;', SqrPaymentForm.paymentForm);
 
-    if (!!SqrPaymentForm.paymentForm) {
-      SqrPaymentForm.build();
-      // SqrPaymentForm.destroy();
-      // const iFrames = document.getElementsByTagName('iframe');
-      // if (iFrames.length) {
-      //   iFrames.forEach((frame) => {
-      //     const frameId = frame.getAttribute('id');
-      //     const newEl = document.createElement('div').setAttribute('id', frameId);
-      //     frame.parentNode.replaceChild(frame, newEl);
-      //   });
-      // }
-    }
-    SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
-    SqrPaymentForm.build();
+    // console.log('%cSqrPaymentForm.paymentForm', 'background:red;', SqrPaymentForm.paymentForm);
+    // if (!!SqrPaymentForm.paymentForm) {
+    //   console.log('%cCONDITION PASSED', 'background:red;');
+    //   // SqrPaymentForm.build();
+    //   const iFrames = document.getElementsByTagName('iframe');
+    //   // console.log('%ciFrames.length', 'background:red;', iFrames.length);
+    //   if (iFrames.length) {
+    //     // console.log('%cCONDITION PASSED', 'background:red;');
+    //     for (let i = (iFrames.length - 1); i > -1; i -= 1) {
+    //       const frame = iFrames[i];
+    //       const frameId = frame.getAttribute('id');
+    //       const newEl = document.createElement('div');
+    //       newEl.setAttribute('id', frameId);
+    //       frame.replaceWith(newEl);
+    //     }
+    //     SqrPaymentForm.destroy();
+    //   } else {
+    //     SqrPaymentForm.destroy();
+    //     SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
+    //     SqrPaymentForm.build();
+    //   }
+    // } else {
+    //   SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
+    //   SqrPaymentForm.build();
+    // }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -138,11 +147,36 @@ class ExpressCheckout extends Component {
       const countriesWithPostal = ['United States', 'Canada', 'United Kingdom'];
 
       if (countriesWithPostal.includes(e.target.value)) {
-        if (SqrPaymentForm.type === 'renderWithZip') {
+        if (!!SqrPaymentForm.options) {
+          if (SqrPaymentForm.type === 'renderWithZip') {
+            this.setState(prevState => ({
+              ...prevState,
+              [e.target.name]: e.target.value,
+              ccRenderKey: 'renderWithZip',
+            }), () => {
+              SqrPaymentForm.build();
+            });
+          } else {
+            this.setState(prevState => ({
+              ...prevState,
+              [e.target.name]: e.target.value,
+              ccRenderKey: 'renderWithZip',
+            }), () => {
+              SqrPaymentForm.destroy();
+              SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
+              SqrPaymentForm.build();
+            });
+          }
+        } else {
+          SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
+          SqrPaymentForm.build();
+        }
+      } else if (SqrPaymentForm.type === 'renderWithoutZip') {
+        if (!!SqrPaymentForm.options) {
           this.setState(prevState => ({
             ...prevState,
             [e.target.name]: e.target.value,
-            ccRenderKey: 'renderWithZip',
+            ccRenderKey: 'renderWithoutZip',
           }), () => {
             SqrPaymentForm.build();
           });
@@ -150,36 +184,20 @@ class ExpressCheckout extends Component {
           this.setState(prevState => ({
             ...prevState,
             [e.target.name]: e.target.value,
-            ccRenderKey: 'renderWithZip',
+            ccRenderKey: 'renderWithoutZip',
           }), () => {
             SqrPaymentForm.destroy();
-            SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
+            SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
             SqrPaymentForm.build();
           });
         }
-      }
-      if (SqrPaymentForm.type === 'renderWithoutZip') {
-        this.setState(prevState => ({
-          ...prevState,
-          [e.target.name]: e.target.value,
-          ccRenderKey: 'renderWithoutZip',
-        }), () => {
-          SqrPaymentForm.build();
-        });
       } else {
-        this.setState(prevState => ({
-          ...prevState,
-          [e.target.name]: e.target.value,
-          ccRenderKey: 'renderWithoutZip',
-        }), () => {
-          SqrPaymentForm.destroy();
-          SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
-          SqrPaymentForm.build();
-        });
+        SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
+        SqrPaymentForm.build();
       }
-    } else {
-      this.setState({ [e.target.name]: e.target.value });
     }
+
+    this.setState({ [e.target.name]: e.target.value });
   };
 
   toggleModal = (e) => {
@@ -344,7 +362,6 @@ class ExpressCheckout extends Component {
           showModal={this.state.showCvnModal}
           toggleModal={this.toggleModal}
         />
-
       </div>
     );
   }

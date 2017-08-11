@@ -1,3 +1,4 @@
+
 const applicationId = process.env.SQUARE_APPLICATION_ID;
 
 if (applicationId === '') console.error('You need to provide a value for the applicationId variable.');
@@ -78,22 +79,22 @@ class SqrPaymentForm {
           switch (inputEvent.eventType) {
             case 'focusClassAdded':
             // Handle as desired
-              break;
+            break;
             case 'focusClassRemoved':
             // Handle as desired
-              break;
+            break;
             case 'errorClassAdded':
             // Handle as desired
-              break;
+            break;
             case 'errorClassRemoved':
             // Handle as desired
-              break;
+            break;
             case 'cardBrandChanged':
             // Handle as desired
-              break;
+            break;
             case 'postalCodeChanged':
             // Handle as desired
-              break;
+            break;
             default: break;
           }
         },

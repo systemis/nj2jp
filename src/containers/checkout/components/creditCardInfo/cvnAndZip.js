@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-// import Validation from 'react-validation';
 
 const { func, string } = PropTypes;
 
@@ -45,6 +44,8 @@ class CvnAndZip extends React.Component {
 
   render() {
     const enableZip = this.state.ccRenderKey === 'renderWithZip';
+    console.log('%cthis.state.ccRenderKey', 'background:lime;', this.state.ccRenderKey);
+    console.log('%cenableZip', 'background:pink;', enableZip);
 
     return (
       <div className="input__row cvn">

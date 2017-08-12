@@ -168,8 +168,14 @@ class ExpressCheckout extends Component {
             });
           }
         } else {
-          SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
-          SqrPaymentForm.build();
+          this.setState(prevState => ({
+            ...prevState,
+            [e.target.name]: e.target.value,
+            ccRenderKey: 'renderWithZip',
+          }), () => {
+            SqrPaymentForm.create('renderWithZip', this.handleNonceResponse);
+            SqrPaymentForm.build();
+          });
         }
       } else if (SqrPaymentForm.type === 'renderWithoutZip') {
         if (!!SqrPaymentForm.options) {
@@ -192,8 +198,14 @@ class ExpressCheckout extends Component {
           });
         }
       } else {
-        SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
-        SqrPaymentForm.build();
+        this.setState(prevState => ({
+          ...prevState,
+          [e.target.name]: e.target.value,
+          ccRenderKey: 'renderWithoutZip',
+        }), () => {
+          SqrPaymentForm.create('renderWithoutZip', this.handleNonceResponse);
+          SqrPaymentForm.build();
+        });
       }
     }
 
